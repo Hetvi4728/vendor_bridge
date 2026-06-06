@@ -111,6 +111,7 @@ vendor_bridge/
 ├── index.html
 ├── style.css
 ├── script.js
+├──package.json
 ├── assets/
 │   ├── images/
 │   └── icons/
