@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProcureFlow ERP – Procurement & Vendor Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="backend-status">
+   Checking Backend...
+</div>
+
+
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-left">
+    <div class="auth-brand">
+      <h1>Procure<span>Flow</span></h1>
+      <p>Complete Procurement & Vendor Management ERP solution for modern enterprises. Streamline your entire procurement lifecycle.</p>
+      <div class="auth-features">
+        <div class="auth-feature"><i class="fas fa-building"></i>Vendor Registration & Management</div>
+        <div class="auth-feature"><i class="fas fa-file-alt"></i>RFQ Creation & Quotation Comparison</div>
+        <div class="auth-feature"><i class="fas fa-check-double"></i>Multi-level Approval Workflows</div>
+        <div class="auth-feature"><i class="fas fa-file-invoice"></i>Purchase Orders & Invoice Generation</div>
+        <div class="auth-feature"><i class="fas fa-chart-line"></i>Analytics & Procurement Reports</div>
+      </div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+      <div class="auth-logo">
+        <div class="auth-logo-icon"><i class="fas fa-box"></i></div>
+        <div class="auth-logo-text">ProcureFlow <span>Enterprise ERP</span></div>
+      </div>
+      <!-- Login Form -->
+      <div id="login-form" class="auth-form">
+        <h2>Welcome back</h2>
+        <p>Sign in to your procurement portal</p>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" placeholder="name@company.com" value="admin@procureflow.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" value="password">
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text2)">
+            <input type="checkbox" checked> Remember me
+          </label>
+          <a style="font-size:13px;color:var(--primary);cursor:pointer" onclick="showForgot()">Forgot password?</a>
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="font-size:13px;font-weight:500;color:var(--text2);margin-bottom:8px;display:block">Demo Roles</label>
+          <div class="role-selector">
+            <div class="role-option selected" onclick="selectRole(this,'admin')"><i class="fas fa-shield-alt"></i> Admin<span>Full access</span></div>
+            <div class="role-option" onclick="selectRole(this,'manager')"><i class="fas fa-user-tie"></i> Manager<span>Approver</span></div>
+            <div class="role-option" onclick="selectRole(this,'officer')"><i class="fas fa-briefcase"></i> Officer<span>Procurement</span></div>
+            <div class="role-option" onclick="selectRole(this,'vendor')"><i class="fas fa-store"></i> Vendor<span>Supplier</span></div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+        <div class="auth-divider">or continue with</div>
+        <button class="btn btn-secondary btn-block" style="margin-bottom:12px"><i class="fab fa-google"></i> Google SSO</button>
+        <div class="auth-switch">Don't have an account? <a onclick="showSignup()">Create one</a></div>
+      </div>
+      <!-- Signup Form -->
+      <div id="signup-form" class="auth-form" style="display:none">
+        <h2>Create account</h2>
+        <p>Join your organization's procurement portal</p>
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input placeholder="John"></div>
+          <div class="form-group"><label>Last Name</label><input placeholder="Doe"></div>
+        </div>
+        <div class="form-group"><label>Work Email</label><input type="email" placeholder="john@company.com"></div>
+        <div class="form-group"><label>Company</label><input placeholder="Company name"></div>
+        <div class="form-group"><label>Department</label>
+          <select><option>Procurement</option><option>Finance</option><option>Operations</option><option>IT</option></select>
+        </div>
+        <div class="form-group"><label>Password</label><input type="password" placeholder="Min. 8 characters"></div>
+        <button class="btn btn-primary btn-lg btn-block" onclick="showLogin()"><i class="fas fa-user-plus"></i> Create Account</button>
+        <div class="auth-switch">Already have an account? <a onclick="showLogin()">Sign in</a></div>
+      </div>
+      <!-- Forgot Form -->
+      <div id="forgot-form" class="auth-form" style="display:none">
+        <h2>Reset password</h2>
+        <p>We'll send you a reset link</p>
+        <div class="form-group"><label>Email Address</label><input type="email" placeholder="name@company.com"></div>
+        <button class="btn btn-primary btn-lg btn-block"><i class="fas fa-envelope"></i> Send Reset Link</button>
+        <div class="auth-switch"><a onclick="showLogin()">← Back to sign in</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon"><i class="fas fa-box"></i></div>
+      <div class="sidebar-logo-text">ProcureFlow <span>Enterprise ERP</span></div>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sb-avatar">A</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sb-name">Administrator</div>
+        <div class="sidebar-user-role" id="sb-role">Admin</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Overview</div>
+      <div class="sidebar-item active" onclick="showPage('dashboard')"><i class="fas fa-th-large"></i> Dashboard</div>
+      <div class="sidebar-section">Procurement</div>
+      <div class="sidebar-item" onclick="showPage('vendors')"><i class="fas fa-building"></i> Vendors</div>
+      <div class="sidebar-item" onclick="showPage('rfq')"><i class="fas fa-file-alt"></i> RFQ Management</div>
+      <div class="sidebar-item" onclick="showPage('quotations')"><i class="fas fa-balance-scale"></i> Quotation Compare</div>
+      <div class="sidebar-item" onclick="showPage('approvals')"><i class="fas fa-check-circle"></i> Approvals <span class="sidebar-badge" id="approval-count">3</span></div>
+      <div class="sidebar-section">Documents</div>
+      <div class="sidebar-item" onclick="showPage('orders')"><i class="fas fa-shopping-cart"></i> Purchase Orders</div>
+      <div class="sidebar-item" onclick="showPage('invoices')"><i class="fas fa-file-invoice-dollar"></i> Invoices</div>
+      <div class="sidebar-section">Insights</div>
+      <div class="sidebar-item" onclick="showPage('activity')"><i class="fas fa-stream"></i> Activity Logs</div>
+      <div class="sidebar-item" onclick="showPage('reports')"><i class="fas fa-chart-bar"></i> Reports & Analytics</div>
+      <div class="sidebar-section admin-only">Admin</div>
+      <div class="sidebar-item admin-only" onclick="showPage('users')"><i class="fas fa-users"></i> User Management</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-item" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Sign Out</div>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <div class="main-area">
+    <header id="header">
+      <div class="header-title">
+        <h2 id="page-title">Dashboard</h2>
+        <p id="page-subtitle">Welcome back, Administrator</p>
+      </div>
+      <div class="header-search">
+        <i class="fas fa-search"></i>
+        <input placeholder="Search vendors, RFQs, orders...">
+      </div>
+      <div class="header-actions">
+        <div style="position:relative">
+          <button class="icon-btn" onclick="toggleNotif(this)"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+          <div class="notif-panel" id="notif-panel">
+            <div style="padding:14px 18px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between">
+              <span style="font-size:14px;font-weight:600">Notifications</span>
+              <span style="font-size:12px;color:var(--primary);cursor:pointer">Mark all read</span>
+            </div>
+            <div class="notif-item unread"><div class="notif-title">RFQ #RFQ-2024-018 Approved</div><div class="notif-desc">Tech Office Supplies request has been approved</div><div class="notif-time">2 min ago</div></div>
+            <div class="notif-item unread"><div class="notif-title">New Quotation Received</div><div class="notif-desc">Techmart Solutions submitted a quotation for RFQ-017</div><div class="notif-time">18 min ago</div></div>
+            <div class="notif-item"><div class="notif-title">Invoice INV-2024-042 Due</div><div class="notif-desc">Payment due in 3 days</div><div class="notif-time">1 hour ago</div></div>
+            <div class="notif-item"><div class="notif-title">Vendor Registration</div><div class="notif-desc">CloudSoft Solutions has registered as a new vendor</div><div class="notif-time">3 hours ago</div></div>
+            <div style="padding:12px 18px;text-align:center;border-top:1px solid var(--border-light)"><span style="font-size:13px;color:var(--primary);cursor:pointer">View all notifications</span></div>
+          </div>
+        </div>
+        <button class="icon-btn"><i class="fas fa-cog"></i></button>
+        <button class="icon-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button>
+      </div>
+    </header>
+
+    <main id="content">
+
+      <!-- ======= DASHBOARD ======= -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-file-alt"></i></div><div class="stat-label">Active RFQs</div><div class="stat-value">12</div><div class="stat-sub"><span class="trend-up">↑ 3</span> this week</div></div>
+          <div class="stat-card amber"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-label">Pending Approvals</div><div class="stat-value">3</div><div class="stat-sub">Awaiting review</div></div>
+          <div class="stat-card green"><div class="stat-icon"><i class="fas fa-shopping-cart"></i></div><div class="stat-label">Purchase Orders</div><div class="stat-value">48</div><div class="stat-sub"><span class="trend-up">↑ 12%</span> vs last month</div></div>
+          <div class="stat-card red"><div class="stat-icon"><i class="fas fa-file-invoice-dollar"></i></div><div class="stat-label">Total Spend (₹)</div><div class="stat-value">24.6L</div><div class="stat-sub"><span class="trend-down">↓ 3%</span> vs last month</div></div>
+        </div>
+
+        <div class="quick-actions">
+          <div class="quick-action blue" onclick="showPage('rfq');setTimeout(()=>openRFQModal(),200)"><i class="fas fa-plus-circle"></i><span>New RFQ</span></div>
+          <div class="quick-action amber" onclick="showPage('vendors');setTimeout(()=>openVendorModal(),200)"><i class="fas fa-building"></i><span>Add Vendor</span></div>
+          <div class="quick-action green" onclick="showPage('orders')"><i class="fas fa-shopping-cart"></i><span>New Purchase Order</span></div>
+          <div class="quick-action purple" onclick="showPage('invoices')"><i class="fas fa-file-invoice"></i><span>Generate Invoice</span></div>
+        </div>
+
+        <div class="recent-grid">
+          <div class="table-wrap">
+            <div class="table-header"><h3>Recent RFQs</h3><button class="btn btn-secondary btn-sm" onclick="showPage('rfq')">View All</button></div>
+            <table><thead><tr><th>RFQ Number</th><th>Title</th><th>Status</th><th>Deadline</th></tr></thead>
+            <tbody>
+              <tr><td class="text-mono">RFQ-2024-018</td><td>Office Furniture Q4</td><td><span class="badge badge-active">Active</span></td><td class="td-muted">Dec 28, 2024</td></tr>
+              <tr><td class="text-mono">RFQ-2024-017</td><td>IT Hardware Refresh</td><td><span class="badge badge-review">In Review</span></td><td class="td-muted">Dec 20, 2024</td></tr>
+              <tr><td class="text-mono">RFQ-2024-016</td><td>Stationery & Supplies</td><td><span class="badge badge-approved">Approved</span></td><td class="td-muted">Dec 15, 2024</td></tr>
+              <tr><td class="text-mono">RFQ-2024-015</td><td>Software Licenses</td><td><span class="badge badge-pending">Pending</span></td><td class="td-muted">Jan 5, 2025</td></tr>
+            </tbody></table>
+          </div>
+          <div class="table-wrap">
+            <div class="table-header"><h3>Recent Invoices</h3><button class="btn btn-secondary btn-sm" onclick="showPage('invoices')">View All</button></div>
+            <table><thead><tr><th>Invoice #</th><th>Vendor</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td class="text-mono">INV-042</td><td>TechMart Solutions</td><td>₹1,24,500</td><td><span class="badge badge-paid">Paid</span></td></tr>
+              <tr><td class="text-mono">INV-041</td><td>Global Office Co.</td><td>₹68,200</td><td><span class="badge badge-pending">Pending</span></td></tr>
+              <tr><td class="text-mono">INV-040</td><td>CloudSoft Solutions</td><td>₹2,15,000</td><td><span class="badge badge-sent">Sent</span></td></tr>
+              <tr><td class="text-mono">INV-039</td><td>Rapid Logistics Ltd</td><td>₹42,800</td><td><span class="badge badge-overdue">Overdue</span></td></tr>
+            </tbody></table>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">Monthly Procurement Spend (₹ Lakhs)<button class="btn btn-ghost btn-sm">This Year ▾</button></div>
+            <div class="chart-bars" id="monthly-chart"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Recent Activity</div>
+            <div id="activity-feed"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======= VENDORS ======= -->
+      <div class="page" id="page-vendors">
+        <div class="page-header">
+          <div class="page-header-left"><h1>Vendor Management</h1><p>Manage your supplier relationships and vendor database</p></div>
+          <div class="actions-bar">
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Export</button>
+            <button class="btn btn-primary" onclick="openVendorModal()"><i class="fas fa-plus"></i> Add Vendor</button>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <input placeholder="Search vendors by name, GST, category..." id="vendor-search" oninput="filterVendors()">
+          <select id="vendor-cat-filter" onchange="filterVendors()">
+            <option value="">All Categories</option>
+            <option>IT & Technology</option><option>Office Supplies</option><option>Logistics</option><option>Software</option><option>Furniture</option>
+          </select>
+          <select id="vendor-status-filter" onchange="filterVendors()">
+            <option value="">All Status</option>
+            <option>Active</option><option>Inactive</option><option>Under Review</option>
+          </select>
+        </div>
+        <div class="vendor-grid" id="vendor-grid"></div>
+      </div>
+
+      <!-- ======= RFQ ======= -->
+      <div class="page" id="page-rfq">
+        <div class="page-header">
+          <div class="page-header-left"><h1>RFQ Management</h1><p>Create and manage Request for Quotations</p></div>
+          <div class="actions-bar">
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-filter"></i> Filter</button>
+            <button class="btn btn-primary" onclick="openRFQModal()"><i class="fas fa-plus"></i> Create RFQ</button>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <input placeholder="Search RFQs..." id="rfq-search" oninput="filterRFQ()">
+          <select id="rfq-status-filter" onchange="filterRFQ()">
+            <option value="">All Status</option>
+            <option>Draft</option><option>Active</option><option>In Review</option><option>Closed</option>
+          </select>
+          <select>
+            <option>All Dates</option><option>This Week</option><option>This Month</option>
+          </select>
+        </div>
+        <div id="rfq-list" style="display:grid;gap:14px"></div>
+      </div>
+
+      <!-- ======= QUOTATIONS ======= -->
+      <div class="page" id="page-quotations">
+        <div class="page-header">
+          <div class="page-header-left"><h1>Quotation Comparison</h1><p>Compare vendor quotations side-by-side</p></div>
+          <div class="actions-bar">
+            <select id="compare-rfq-select" onchange="loadComparison()" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:var(--font);font-size:13px;outline:none">
+              <option value="">Select RFQ to Compare...</option>
+              <option value="rfq-017">RFQ-2024-017 – IT Hardware Refresh</option>
+              <option value="rfq-018">RFQ-2024-018 – Office Furniture Q4</option>
+            </select>
+            <button class="btn btn-primary" id="submit-rfq-btn" onclick="openQuotationModal()" style="display:none"><i class="fas fa-paper-plane"></i> Submit Quotation</button>
+          </div>
+        </div>
+        <div id="compare-area">
+          <div class="empty-state"><i class="fas fa-balance-scale"></i><p>Select an RFQ above to compare quotations</p></div>
+        </div>
+      </div>
+
+      <!-- ======= APPROVALS ======= -->
+      <div class="page" id="page-approvals">
+        <div class="page-header">
+          <div class="page-header-left"><h1>Approval Workflow</h1><p>Review and process procurement approval requests</p></div>
+          <div class="actions-bar">
+            <select style="padding:8px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:var(--font);font-size:13px;outline:none">
+              <option>All Requests</option><option>Pending</option><option>Approved</option><option>Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div id="approval-list"></div>
+      </div>
+
+      <!-- ======= PURCHASE ORDERS ======= -->
+      <div class="page" id="page-orders">
+        <div class="page-header">
+          <div class="page-header-left"><h1>Purchase Orders</h1><p>Manage and track all purchase orders</p></div>
+          <div class="actions-bar">
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Export</button>
+            <button class="btn btn-primary" onclick="openPOModal()"><i class="fas fa-plus"></i> New PO</button>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <input placeholder="Search purchase orders..." id="po-search">
+          <select><option>All Status</option><option>Draft</option><option>Confirmed</option><option>Received</option><option>Cancelled</option></select>
+          <select><option>All Vendors</option><option>TechMart Solutions</option><option>Global Office Co.</option></select>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th><input type="checkbox"></th><th>PO Number</th><th>Vendor</th><th>RFQ Reference</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="po-table-body"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ======= INVOICES ======= -->
+      <div class="page" id="page-invoices">
+        <div class="page-header">
+          <div class="page-header-left"><h1>Invoices</h1><p>Generate, send and track all procurement invoices</p></div>
+          <div class="actions-bar">
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Export</button>
+            <button class="btn btn-primary" onclick="openInvoiceModal()"><i class="fas fa-plus"></i> Generate Invoice</button>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <input placeholder="Search invoices...">
+          <select><option>All Status</option><option>Draft</option><option>Sent</option><option>Paid</option><option>Overdue</option></select>
+          <select><option>All Vendors</option><option>TechMart Solutions</option><option>Global Office Co.</option></select>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th><input type="checkbox"></th><th>Invoice #</th><th>PO Reference</th><th>Vendor</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="invoice-table-body"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ======= ACTIVITY ======= -->
+      <div class="page" id="page-activity">
+        <div class="page-header">
+          <div class="page-header-left"><h1>Activity Logs & Notifications</h1><p>Track all procurement activities and audit trail</p></div>
+          <div class="actions-bar">
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Export Logs</button>
+          </div>
+        </div>
+        <div class="two-col" style="align-items:start">
+          <div class="card">
+            <div class="card-title">Activity Timeline</div>
+            <div id="activity-log-list"></div>
+          </div>
+          <div>
+            <div class="card mb-16">
+              <div class="card-title">Notifications</div>
+              <div class="notif-item unread" style="border-radius:var(--radius);margin-bottom:8px;border:1px solid var(--border-light)"><div class="notif-title">RFQ-018 Approved</div><div class="notif-desc">Tech Office Supplies approved by Manager</div><div class="notif-time">2 min ago</div></div>
+              <div class="notif-item" style="border-radius:var(--radius);margin-bottom:8px;border:1px solid var(--border-light)"><div class="notif-title">Invoice INV-042 Paid</div><div class="notif-desc">TechMart Solutions payment received</div><div class="notif-time">1 hour ago</div></div>
+              <div class="notif-item" style="border-radius:var(--radius);border:1px solid var(--border-light)"><div class="notif-title">New Vendor Registered</div><div class="notif-desc">CloudSoft Solutions awaiting approval</div><div class="notif-time">3 hours ago</div></div>
+            </div>
+            <div class="card">
+              <div class="card-title">System Alerts</div>
+              <div style="background:var(--warning-light);border:1px solid #f0d080;border-radius:var(--radius);padding:12px;margin-bottom:10px">
+                <div style="font-size:13px;font-weight:600;color:var(--warning)"><i class="fas fa-exclamation-triangle"></i> 2 Invoices Overdue</div>
+                <div style="font-size:12px;color:var(--text2);margin-top:4px">INV-039, INV-036 past due date</div>
+              </div>
+              <div style="background:var(--info-light);border:1px solid #bdddf5;border-radius:var(--radius);padding:12px">
+                <div style="font-size:13px;font-weight:600;color:var(--info)"><i class="fas fa-info-circle"></i> 3 RFQs Expiring Soon</div>
+                <div style="font-size:12px;color:var(--text2);margin-top:4px">Deadlines within 48 hours</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======= REPORTS ======= -->
+      <div class="page" id="page-reports">
+        <div class="page-header">
+          <div class="page-header-left"><h1>Reports & Analytics</h1><p>Procurement insights, vendor performance and spending summaries</p></div>
+          <div class="actions-bar">
+            <select style="padding:8px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:var(--font);font-size:13px;outline:none">
+              <option>Last 12 Months</option><option>Last Quarter</option><option>Last Month</option>
+            </select>
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Export Report</button>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-rupee-sign"></i></div><div class="stat-label">Total Spend</div><div class="stat-value">₹2.4Cr</div><div class="stat-sub"><span class="trend-up">↑ 8%</span> YoY</div></div>
+          <div class="stat-card green"><div class="stat-icon"><i class="fas fa-building"></i></div><div class="stat-label">Active Vendors</div><div class="stat-value">28</div><div class="stat-sub">4 new this quarter</div></div>
+          <div class="stat-card amber"><div class="stat-icon"><i class="fas fa-file-alt"></i></div><div class="stat-label">RFQs Issued</div><div class="stat-value">86</div><div class="stat-sub"><span class="trend-up">↑ 14%</span> YoY</div></div>
+          <div class="stat-card red"><div class="stat-icon"><i class="fas fa-percentage"></i></div><div class="stat-label">Cost Savings</div><div class="stat-value">12.4%</div><div class="stat-sub">vs. last year</div></div>
+        </div>
+        <div class="two-col mb-20">
+          <div class="card">
+            <div class="card-title">Monthly Spend Trend</div>
+            <div class="chart-bars" id="report-chart"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Spend by Category</div>
+            <div id="category-chart" style="padding:12px 0"></div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="table-wrap">
+            <div class="table-header"><h3>Top Vendors by Spend</h3></div>
+            <table><thead><tr><th>Vendor</th><th>Category</th><th>Total Spend</th><th>Orders</th><th>Rating</th></tr></thead>
+            <tbody>
+              <tr><td><strong>TechMart Solutions</strong></td><td>IT & Technology</td><td>₹68,50,000</td><td>24</td><td><span style="color:var(--accent)">★ 4.8</span></td></tr>
+              <tr><td><strong>Global Office Co.</strong></td><td>Office Supplies</td><td>₹32,20,000</td><td>18</td><td><span style="color:var(--accent)">★ 4.6</span></td></tr>
+              <tr><td><strong>CloudSoft Solutions</strong></td><td>Software</td><td>₹28,90,000</td><td>12</td><td><span style="color:var(--accent)">★ 4.5</span></td></tr>
+              <tr><td><strong>Rapid Logistics Ltd</strong></td><td>Logistics</td><td>₹18,40,000</td><td>31</td><td><span style="color:var(--accent)">★ 4.3</span></td></tr>
+              <tr><td><strong>Prime Furniture Hub</strong></td><td>Furniture</td><td>₹14,60,000</td><td>8</td><td><span style="color:var(--accent)">★ 4.7</span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="card">
+            <div class="card-title">Vendor Performance</div>
+            <div id="vendor-performance"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======= USERS (Admin) ======= -->
+      <div class="page" id="page-users">
+        <div class="page-header">
+          <div class="page-header-left"><h1>User Management</h1><p>Manage system users and role assignments</p></div>
+          <div class="actions-bar">
+            <button class="btn btn-primary"><i class="fas fa-plus"></i> Add User</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Department</th><th>Status</th><th>Last Login</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="sidebar-avatar" style="background:var(--primary)">A</div><strong>Arjun Sharma</strong></div></td><td>arjun@company.com</td><td><span class="badge badge-review">Admin</span></td><td>IT</td><td><span class="badge badge-active">Active</span></td><td class="td-muted">Now</td><td><button class="btn btn-ghost btn-sm"><i class="fas fa-edit"></i></button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="sidebar-avatar" style="background:var(--success)">P</div><strong>Priya Mehta</strong></div></td><td>priya@company.com</td><td><span class="badge badge-pending">Manager</span></td><td>Finance</td><td><span class="badge badge-active">Active</span></td><td class="td-muted">2 hours ago</td><td><button class="btn btn-ghost btn-sm"><i class="fas fa-edit"></i></button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="sidebar-avatar" style="background:var(--accent)">R</div><strong>Rahul Kumar</strong></div></td><td>rahul@company.com</td><td><span class="badge badge-active">Officer</span></td><td>Procurement</td><td><span class="badge badge-active">Active</span></td><td class="td-muted">1 day ago</td><td><button class="btn btn-ghost btn-sm"><i class="fas fa-edit"></i></button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="sidebar-avatar" style="background:var(--danger)">S</div><strong>Sunita Rao</strong></div></td><td>sunita@vendor.com</td><td><span class="badge badge-sent">Vendor</span></td><td>External</td><td><span class="badge badge-active">Active</span></td><td class="td-muted">3 days ago</td><td><button class="btn btn-ghost btn-sm"><i class="fas fa-edit"></i></button></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ======= MODALS ======= -->
+<!-- Vendor Modal -->
+<div class="modal-overlay" id="vendor-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Register New Vendor</h3><button class="icon-btn" onclick="closeModal('vendor-modal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label>Company Name *</label><input placeholder="e.g. TechMart Solutions"></div><div class="form-group"><label>Category *</label><select><option>IT & Technology</option><option>Office Supplies</option><option>Logistics</option><option>Software</option><option>Furniture</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label>GST Number</label><input placeholder="22AAAAA0000A1Z5" style="font-family:var(--mono)"></div><div class="form-group"><label>PAN Number</label><input placeholder="AAAAA0000A" style="font-family:var(--mono)"></div></div>
+      <div class="form-row"><div class="form-group"><label>Contact Person</label><input placeholder="Full name"></div><div class="form-group"><label>Designation</label><input placeholder="e.g. Sales Manager"></div></div>
+      <div class="form-row"><div class="form-group"><label>Email *</label><input type="email" placeholder="contact@company.com"></div><div class="form-group"><label>Phone *</label><input placeholder="+91 98765 43210"></div></div>
+      <div class="form-group"><label>Address</label><textarea placeholder="Registered office address..." rows="2"></textarea></div>
+      <div class="form-row"><div class="form-group"><label>City</label><input placeholder="Mumbai"></div><div class="form-group"><label>State</label><select><option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option><option>Delhi</option><option>Tamil Nadu</option></select></div></div>
+      <div class="form-group"><label>Payment Terms</label><select><option>Net 30</option><option>Net 45</option><option>Net 60</option><option>Immediate</option></select></div>
+      <div class="form-group"><label>Notes</label><textarea placeholder="Additional notes about this vendor..." rows="2"></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('vendor-modal')">Cancel</button><button class="btn btn-primary" onclick="saveVendor()"><i class="fas fa-save"></i> Register Vendor</button></div>
+  </div>
+</div>
+
+<!-- RFQ Modal -->
+<div class="modal-overlay" id="rfq-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>Create New RFQ</h3><button class="icon-btn" onclick="closeModal('rfq-modal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>RFQ Title *</label><input placeholder="e.g. IT Hardware Refresh – Q1 2025" id="rfq-title-input"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Category</label><select><option>IT & Technology</option><option>Office Supplies</option><option>Software</option><option>Furniture</option></select></div>
+        <div class="form-group"><label>Submission Deadline *</label><input type="date" id="rfq-deadline-input"></div>
+      </div>
+      <div class="form-group"><label>Description</label><textarea placeholder="Detailed description of your procurement requirement..." rows="3"></textarea></div>
+      
+      <div style="margin-bottom:16px">
+        <label style="font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:12px">Line Items</label>
+        <div class="items-table-wrap">
+          <table style="width:100%;border-collapse:collapse">
+            <thead><tr style="background:var(--bg2)"><th style="padding:10px 14px;text-align:left;font-size:12px;font-weight:600;color:var(--text3)">Item Name</th><th style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--text3)">Qty</th><th style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--text3)">Unit</th><th style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--text3)">Est. Price (₹)</th><th style="padding:10px;font-size:12px"></th></tr></thead>
+            <tbody id="rfq-items-body">
+              <tr><td style="padding:8px 14px"><input style="width:100%;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;font-family:var(--font)" placeholder="Item description"></td><td style="padding:8px"><input type="number" style="width:80px;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;font-family:var(--font);text-align:right" value="10"></td><td style="padding:8px"><select style="border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;font-family:var(--font)"><option>Units</option><option>Kg</option><option>Liters</option><option>Pieces</option></select></td><td style="padding:8px"><input type="number" style="width:120px;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;font-family:var(--font);text-align:right" placeholder="0.00"></td><td style="padding:8px"><button class="btn btn-ghost btn-sm" style="color:var(--danger)"><i class="fas fa-trash"></i></button></td></tr>
+            </tbody>
+          </table>
+          <div style="padding:10px;border-top:1px solid var(--border-light)"><button class="btn btn-ghost btn-sm" onclick="addRFQItem()"><i class="fas fa-plus"></i> Add Item</button></div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Assign Vendors</label>
+        <div class="vendor-select-list" id="rfq-vendor-list"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Delivery Required By</label><input type="date"></div>
+        <div class="form-group"><label>Budget (₹)</label><input type="number" placeholder="0.00"></div>
+      </div>
+      <div class="form-group"><label>Attachments</label><input type="file" multiple style="padding:8px"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('rfq-modal')">Save as Draft</button><button class="btn btn-primary" onclick="saveRFQ()"><i class="fas fa-paper-plane"></i> Publish RFQ</button></div>
+  </div>
+</div>
+
+<!-- Quotation Submission Modal -->
+<div class="modal-overlay" id="quotation-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>Submit Quotation</h3><button class="icon-btn" onclick="closeModal('quotation-modal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div style="background:var(--info-light);border-radius:var(--radius);padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--info)"><i class="fas fa-info-circle"></i> <strong>RFQ-2024-017:</strong> IT Hardware Refresh — Deadline: December 20, 2024</div>
+      <div class="form-row"><div class="form-group"><label>Vendor Company *</label><select><option>TechMart Solutions</option><option>Global Office Co.</option><option>CloudSoft Solutions</option></select></div><div class="form-group"><label>Validity (Days)</label><input type="number" value="30"></div></div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:12px">Pricing Details</label>
+        <div class="items-table-wrap">
+          <table style="width:100%;border-collapse:collapse">
+            <thead><tr style="background:var(--bg2)"><th style="padding:10px 14px;text-align:left;font-size:12px;font-weight:600;color:var(--text3)">Item</th><th style="padding:10px;font-size:12px;font-weight:600;color:var(--text3)">Qty</th><th style="padding:10px;font-size:12px;font-weight:600;color:var(--text3)">Unit Price (₹)</th><th style="padding:10px;font-size:12px;font-weight:600;color:var(--text3)">Total (₹)</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:10px 14px;font-size:13px">Laptop 15" – Core i7</td><td style="padding:10px;text-align:center;font-size:13px">10</td><td style="padding:8px"><input type="number" style="width:120px;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;font-family:var(--font);text-align:right" value="65000" oninput="calcQuoteTotal(this)"></td><td style="padding:10px;text-align:right;font-size:13px;font-weight:600" class="q-total">₹6,50,000</td></tr>
+              <tr><td style="padding:10px 14px;font-size:13px">Wireless Mouse</td><td style="padding:10px;text-align:center;font-size:13px">10</td><td style="padding:8px"><input type="number" style="width:120px;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;font-family:var(--font);text-align:right" value="1200" oninput="calcQuoteTotal(this)"></td><td style="padding:10px;text-align:right;font-size:13px;font-weight:600" class="q-total">₹12,000</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Delivery Timeline</label><input placeholder="e.g. 2–3 weeks"></div>
+        <div class="form-group"><label>Payment Terms</label><select><option>Net 30</option><option>Net 45</option><option>Net 60</option><option>50% Advance</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>GST Rate (%)</label><select><option value="18">18%</option><option value="12">12%</option><option value="5">5%</option><option value="0">0%</option></select></div>
+        <div class="form-group"><label>Discount (%)</label><input type="number" value="0" placeholder="0"></div>
+      </div>
+      <div class="form-group"><label>Notes / Terms</label><textarea placeholder="Any special notes, warranty terms, or conditions..." rows="3"></textarea></div>
+      <div class="form-group"><label>Attachments</label><input type="file" multiple style="padding:8px"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('quotation-modal')">Save Draft</button><button class="btn btn-primary" onclick="submitQuotation()"><i class="fas fa-paper-plane"></i> Submit Quotation</button></div>
+  </div>
+</div>
+
+<!-- PO Modal -->
+<div class="modal-overlay" id="po-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>Create Purchase Order</h3><button class="icon-btn" onclick="closeModal('po-modal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>PO Number</label><input value="PO-2024-049" readonly style="background:var(--bg2);font-family:var(--mono)"></div>
+        <div class="form-group"><label>Date</label><input type="date" value="2024-12-18"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Vendor *</label><select id="po-vendor"><option>TechMart Solutions</option><option>Global Office Co.</option><option>CloudSoft Solutions</option><option>Rapid Logistics Ltd</option></select></div>
+        <div class="form-group"><label>RFQ Reference</label><select><option>RFQ-2024-017</option><option>RFQ-2024-016</option><option>RFQ-2024-015</option><option>– Manual PO –</option></select></div>
+      </div>
+      <div class="form-group"><label>Delivery Address</label><textarea rows="2" placeholder="Delivery address...">Head Office: 42, Business Park, Ahmedabad – 380 015</textarea></div>
+      <div class="form-group"><label>Line Items</label>
+        <div class="items-table-wrap">
+          <table style="width:100%;border-collapse:collapse">
+            <thead><tr style="background:var(--bg2)"><th style="padding:10px 14px;text-align:left;font-size:12px;font-weight:600;color:var(--text3)">Description</th><th style="padding:10px;font-size:12px;font-weight:600;color:var(--text3)">Qty</th><th style="padding:10px;font-size:12px;font-weight:600;color:var(--text3)">Unit (₹)</th><th style="padding:10px;font-size:12px;font-weight:600;color:var(--text3)">Total (₹)</th><th></th></tr></thead>
+            <tbody id="po-items-body">
+              <tr><td style="padding:8px 14px"><input style="width:100%;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;font-family:var(--font)" value="Laptop 15″ Core i7 16GB RAM"></td><td style="padding:8px"><input type="number" style="width:70px;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;font-family:var(--font);text-align:right" value="10" oninput="calcPOTotal()"></td><td style="padding:8px"><input type="number" style="width:110px;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;font-family:var(--font);text-align:right" value="65000" oninput="calcPOTotal()"></td><td style="padding:8px;font-size:13px;font-weight:600;text-align:right">₹6,50,000</td><td style="padding:8px"><button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="removePOItem(this)"><i class="fas fa-trash"></i></button></td></tr>
+            </tbody>
+          </table>
+          <div style="padding:10px;border-top:1px solid var(--border-light)"><button class="btn btn-ghost btn-sm" onclick="addPOItem()"><i class="fas fa-plus"></i> Add Item</button></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 220px;gap:16px;margin-top:8px">
+        <div>
+          <div class="form-row"><div class="form-group"><label>GST Rate</label><select onchange="calcPOTotal()" id="po-gst"><option value="18">18% GST</option><option value="12">12% GST</option><option value="5">5% GST</option></select></div><div class="form-group"><label>Payment Terms</label><select><option>Net 30</option><option>Net 45</option><option>Net 60</option></select></div></div>
+          <div class="form-group"><label>Delivery Expected By</label><input type="date"></div>
+        </div>
+        <div style="background:var(--bg2);border-radius:var(--radius);padding:16px;margin-top:21px">
+          <div class="invoice-total-row"><span style="font-size:13px;color:var(--text2)">Subtotal</span><span id="po-subtotal" style="font-size:13px;font-weight:600">₹6,50,000</span></div>
+          <div class="invoice-total-row"><span style="font-size:13px;color:var(--text2)">GST (18%)</span><span id="po-tax" style="font-size:13px;font-weight:600">₹1,17,000</span></div>
+          <div class="invoice-total-final"><span>Total</span><span id="po-total" style="color:var(--primary)">₹7,67,000</span></div>
+        </div>
+      </div>
+      <div class="form-group mt-12"><label>Terms & Conditions</label><textarea rows="2" placeholder="Purchase order terms...">Payment within 30 days of delivery. All items subject to quality inspection.</textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('po-modal')">Save Draft</button><button class="btn btn-success" onclick="savePO()"><i class="fas fa-check"></i> Confirm PO</button></div>
+  </div>
+</div>
+
+<!-- Invoice Modal / Preview -->
+<div class="modal-overlay" id="invoice-modal">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <h3>Invoice Generation</h3>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="printInvoice()"><i class="fas fa-print"></i> Print</button>
+        <button class="btn btn-secondary btn-sm" onclick="downloadInvoice()"><i class="fas fa-download"></i> Download PDF</button>
+        <button class="btn btn-primary btn-sm" onclick="sendInvoiceEmail()"><i class="fas fa-envelope"></i> Send via Email</button>
+        <button class="icon-btn" onclick="closeModal('invoice-modal')"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="sidebar-layout" style="gap:28px">
+        <div>
+          <h4 style="font-size:14px;font-weight:600;margin-bottom:16px;color:var(--text2)">Invoice Details</h4>
+          <div class="form-row"><div class="form-group"><label>Invoice Number</label><input value="INV-2024-043" readonly style="font-family:var(--mono);background:var(--bg2)"></div><div class="form-group"><label>Invoice Date</label><input type="date" value="2024-12-18" id="inv-date" oninput="updateInvoicePreview()"></div></div>
+          <div class="form-row"><div class="form-group"><label>PO Reference</label><select id="inv-po" onchange="updateInvoicePreview()"><option>PO-2024-048</option><option>PO-2024-047</option><option>PO-2024-046</option></select></div><div class="form-group"><label>Due Date</label><input type="date" value="2025-01-17" id="inv-due" oninput="updateInvoicePreview()"></div></div>
+          <div class="form-group"><label>Bill To (Vendor)</label><select id="inv-vendor" onchange="updateInvoicePreview()"><option>TechMart Solutions</option><option>Global Office Co.</option><option>CloudSoft Solutions</option></select></div>
+          <div class="form-group"><label>Vendor Address</label><textarea id="inv-vaddr" rows="2">B-204, Tech Park, Bandra Kurla Complex, Mumbai – 400 051. GSTIN: 27AAAAA0000A1Z5</textarea></div>
+          <div class="form-group"><label>Line Items</label>
+            <div class="items-table-wrap">
+              <table style="width:100%;border-collapse:collapse">
+                <thead><tr style="background:var(--bg2)"><th style="padding:8px 12px;text-align:left;font-size:12px;color:var(--text3)">Description</th><th style="padding:8px;font-size:12px;color:var(--text3)">Qty</th><th style="padding:8px;font-size:12px;color:var(--text3)">Rate (₹)</th><th style="padding:8px;font-size:12px;color:var(--text3)">Total</th></tr></thead>
+                <tbody>
+                  <tr><td style="padding:8px 12px;font-size:13px">Laptop 15″ Core i7 16GB</td><td style="padding:8px;text-align:center;font-size:13px">10</td><td style="padding:8px"><input type="number" value="65000" style="width:100px;border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;font-family:var(--font)" oninput="updateInvoicePreview()"></td><td style="padding:8px;font-size:13px;font-weight:600;text-align:right">₹6,50,000</td></tr>
+                  <tr><td style="padding:8px 12px;font-size:13px">Wireless Mouse</td><td style="padding:8px;text-align:center;font-size:13px">10</td><td style="padding:8px"><input type="number" value="1200" style="width:100px;border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;font-family:var(--font)" oninput="updateInvoicePreview()"></td><td style="padding:8px;font-size:13px;font-weight:600;text-align:right">₹12,000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>GST Rate</label><select id="inv-gst" onchange="updateInvoicePreview()"><option value="18">18%</option><option value="12">12%</option><option value="5">5%</option></select></div>
+            <div class="form-group"><label>Discount (₹)</label><input type="number" id="inv-disc" value="0" oninput="updateInvoicePreview()"></div>
+          </div>
+          <div class="form-group"><label>Notes</label><textarea rows="2" id="inv-notes">Thank you for your business. Please process payment within the due date.</textarea></div>
+          <div class="form-group"><label>Bank Details</label><textarea rows="2">Bank: HDFC Bank | A/C: 0012345678901 | IFSC: HDFC0001234 | Branch: Nariman Point, Mumbai</textarea></div>
+        </div>
+        <div>
+          <h4 style="font-size:14px;font-weight:600;margin-bottom:16px;color:var(--text2)">Invoice Preview</h4>
+          <div class="invoice-preview" id="invoice-preview">
+            <!-- Dynamically rendered -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Approval Action Modal -->
+<div class="modal-overlay" id="approval-modal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header"><h3 id="approval-modal-title">Approve Request</h3><button class="icon-btn" onclick="closeModal('approval-modal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div id="approval-modal-info" style="background:var(--bg2);border-radius:var(--radius);padding:14px;margin-bottom:16px;font-size:13px"></div>
+      <div class="form-group"><label>Remarks</label><textarea id="approval-remarks" rows="3" placeholder="Add your remarks or comments..."></textarea></div>
+      <div class="form-group"><label>Your Name</label><input id="approval-approver" placeholder="Approver name" value="Priya Mehta"></div>
+    </div>
+    <div class="modal-footer" id="approval-modal-footer"></div>
+  </div>
+</div>
+
+<!-- Email Invoice Modal -->
+<div class="modal-overlay" id="email-modal">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header"><h3>Send Invoice via Email</h3><button class="icon-btn" onclick="closeModal('email-modal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>From</label><input value="procurement@company.com" readonly style="background:var(--bg2)"></div>
+      <div class="form-group"><label>To *</label><input value="accounts@techmartsolutions.com"></div>
+      <div class="form-group"><label>CC</label><input placeholder="Optional CC email addresses"></div>
+      <div class="form-group"><label>Subject</label><input value="Invoice INV-2024-043 – ProcureFlow Enterprises"></div>
+      <div class="form-group"><label>Message</label><textarea rows="5">Dear Team,
+
+Please find attached Invoice INV-2024-043 for services rendered as per PO-2024-048.
+
+Total Amount Due: ₹7,87,440
+Due Date: January 17, 2025
+
+Please confirm receipt and process payment at your earliest convenience.
+
+Best regards,
+Procurement Team</textarea></div>
+      <div style="background:var(--bg2);border-radius:var(--radius);padding:12px;font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px"><i class="fas fa-paperclip"></i>INV-2024-043.pdf (attached)</div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('email-modal')">Cancel</button><button class="btn btn-primary" onclick="confirmSendEmail()"><i class="fas fa-paper-plane"></i> Send Email</button></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Print Area -->
+<div class="print-area" id="print-area"></div>
+
+
+<script src="script.js"></script>
+</body>
+</html>
